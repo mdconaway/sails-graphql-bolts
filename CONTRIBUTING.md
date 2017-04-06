@@ -1,4 +1,4 @@
-# Contributing to sails-generate-ember-rest
+# Contributing to sails-graphql-bolts
 
 
 ## Opening Issues

@@ -13,10 +13,10 @@ var sailsgen = require( 'sails-generate' ),
 
 var args = Array.prototype.slice.call(process.argv, 2);
 var scope = {
-  generatorType: 'ember-rest',
+  generatorType: 'graphql-bolts',
   rootPath: process.cwd(),
   modules: {
-    'ember-rest': path.resolve( __dirname, '../' )
+    'graphql-bolts': path.resolve( __dirname, '../' )
   },
   args: args
 };
