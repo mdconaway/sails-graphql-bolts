@@ -83,20 +83,22 @@ Putting it all together, you could have something like this as a complete POST b
 
 ```javascript
 {
-    "query": "query Hero($episode: Episode, $withFriends: Boolean!) {\n
-        hero(episode: $episode) { \n
-            name \n
-            friends @include(if: $withFriends) { \n
-            name \n
-            } \n
-        } \n
-    }",
+    "query": "query Hero($episode: Episode, $withFriends: Boolean!) {"+
+        "hero(episode: $episode) {"+
+            "name,"+
+            "friends @include(if: $withFriends) {"+
+            "name"+
+            "}"+
+        "}"+
+    "}",
     "variables": {
         "episode": "JEDI",
         "withFriends": false
     }
 }
 ```
+
+- Additionally, each level of a graphql query that is referencing a plural resource like a collection or a many relationship can specify a `where` parameter that can be a `JSON.stringified` where object, just like a normal sails.js where object.  
 
 Responses are formatted as per the graphQL specification, thanks to the node.js `graphql` library.
 
