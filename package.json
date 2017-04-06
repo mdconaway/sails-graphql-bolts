@@ -1,6 +1,6 @@
 {
   "name": "sails-graphql-bolts",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "sails generate graphql-bolts",
   "main": "index.js",
   "scripts": {

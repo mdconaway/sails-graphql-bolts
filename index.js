@@ -122,7 +122,7 @@ module.exports = {
                         {
                             fs.mkdirSync(scope.rootPath + '/api/controllers');
                         }
-                        fs.writeFileSync(scope.rootPath + '/api/controllers/' + scope.filename + '.js', 'var GraphQLBolts = require(\'sails-graphql-bolts\');\nmodule.exports = new GraphQLBolts.controller();\n');
+                        fs.writeFileSync(scope.rootPath + '/api/controllers/' + scope.filename + '.js', 'module.exports = require(\'sails-graphql-bolts\').controller;\n');
                         console.info('Created controller: ' + scope.rootPath + '/api/controllers/' + scope.filename + '.js');
                     }
                 }
