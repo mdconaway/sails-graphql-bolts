@@ -165,6 +165,16 @@ Because of the architecture described above, you do not lose any security over y
 # Getting started
 
 * Install the library and generators into your (new) Sails project `npm install sails-graphql-bolts`
+* Add this generator to your .sailsrc file:
+```javascript
+{
+  "generators": {
+    "modules": {
+        "graphql-bolts": "sails-graphql-bolts"
+    }
+  }
+}
+```
 * Run the generator: 
 * `sails generate graphql-bolts controller <name>` for your master endpoint
 * `sails generate graphql-bolts resource <name>` for each model you want to resolve through graphQL
