@@ -90,6 +90,14 @@ function resolveGetNestedSingle(fieldName, model) {
                     if (err) {
                         return reject(err);
                     }
+					if (res.body && Array.isArray(res.body.data)){
+						if (res.body.data.length > 0) {
+							res.body = res.body.data;
+						}
+						else {
+							return reject({message: 'The query ' + JSON.stringify(query) + ' returned no results.'});
+						}
+					}
                     if (res.body instanceof Array) {
                         res.body = res.body[0];
                     }
@@ -117,6 +125,14 @@ function resolveGetSingle(model) {
 			}, reqData), query, function (err, res) {
 				if (err) {
 					return reject(err);
+				}
+				if (res.body && Array.isArray(res.body.data)){
+					if (res.body.data.length > 0) {
+						res.body = res.body.data;
+					}
+					else {
+						return reject({message: 'The query ' + JSON.stringify(query) + ' returned no results.'});
+					}
 				}
 				if (res.body instanceof Array) {
 					res.body = res.body[0];
