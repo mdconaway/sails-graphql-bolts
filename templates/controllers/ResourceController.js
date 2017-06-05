@@ -4,15 +4,21 @@
  * @description :: Server-side logic for managing a resource if it will always be handled by the graph engine
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const create = require('./../actions/create');
+const destroy = require('./../actions/destroy');
+const find = require('./../actions/find');
+const findone = require('./../actions/findone');
+const populate = require('./../actions/populate');
+const update = require('./../actions/update');
 
 function baseController(interrupts) {
     return {
-        create: require('./../actions/create')(interrupts),
-        destroy: require('./../actions/destroy')(interrupts),
-        find: require('./../actions/find')(interrupts),
-        findone: require('./../actions/findone')(interrupts),
-        populate: require('./../actions/populate')(interrupts),
-        update: require('./../actions/update')(interrupts)
+        create: create(interrupts),
+        destroy: destroy(interrupts),
+        find: find(interrupts),
+        findone: findone(interrupts),
+        populate: populate(interrupts),
+        update: update(interrupts)
     };
 }
 
