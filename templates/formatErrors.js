@@ -1,43 +1,38 @@
 function formatError(defaultErrors) {
-	return defaultErrors.reduce(function (formattedErrors, _ref) {
-		var originalError = _ref.originalError;
-		var body = originalError.body;
-		var code = body.code;
-		var status = body.status;
-		var message = body.reason;
-		var model = body.model;
-		var errors = body.invalidAttributes;
+    return defaultErrors.reduce((formattedErrors, ref) => {
+        const originalError = ref.originalError;
+        if (originalError) {
+            const body = originalError.body;
+            const code = body.code;
+            const status = code === 'E_VALIDATION' ? 422 : body.status;
+            const message = [body.reason];
+            const validationErrors = body.invalidAttributes;
+            const processedError = {
+                code,
+                status,
+                message,
+                validationErrors
+            };
 
+            if (validationErrors) {
+                Object.keys(validationErrors).forEach(key => {
+                    if (Array.isArray(validationErrors[key])) {
+                        validationErrors[key].forEach(item => {
+                            if (item && item.message) {
+                                processedError.message.push(item.message);
+                            }
+                        });
+                    }
+                });
+            }
+            processedError.message = processedError.message.join('|');
+            formattedErrors.push(processedError);
+        } else {
+            formattedErrors.push(ref);
+        }
 
-		var processedError = {
-			code: code,
-			status: code === 'E_VALIDATION' ? 422 : status,
-			message: message,
-			model: model,
-			validationErrors: {}
-		};
-
-		if (errors) {
-			processedError.validationErrors = Object.keys(errors).reduce(function (validationErrors, fieldName) {
-
-				if (!validationErrors[fieldName]) {
-					validationErrors[fieldName] = [];
-				}
-
-				errors[fieldName].forEach(function (field) {
-					var rule = field.rule;
-
-					validationErrors[fieldName].push(model + '.' + rule);
-				});
-
-				return validationErrors;
-			}, {});
-		}
-
-		formattedErrors.push(processedError);
-
-		return formattedErrors;
-	}, []);
+        return formattedErrors;
+    }, []);
 }
 
 module.exports = formatError;

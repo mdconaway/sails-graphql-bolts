@@ -2,8 +2,8 @@
  * Module dependencies
  */
 
-var sailsgen = require( 'sails-generate' ),
-  path = require( 'path' );
+let sailsgen = require('sails-generate'),
+    path = require('path');
 
 //
 // This script exists so we can run our generator
@@ -11,21 +11,21 @@ var sailsgen = require( 'sails-generate' ),
 // during development.
 //
 
-var args = Array.prototype.slice.call(process.argv, 2);
-var scope = {
-  generatorType: 'graphql-bolts',
-  rootPath: process.cwd(),
-  modules: {
-    'graphql-bolts': path.resolve( __dirname, '../' )
-  },
-  args: args
+let args = Array.prototype.slice.call(process.argv, 2);
+let scope = {
+    generatorType: 'graphql-bolts',
+    rootPath: process.cwd(),
+    modules: {
+        'graphql-bolts': path.resolve(__dirname, '../')
+    },
+    args: args
 };
 
-sailsgen( scope, function ( err ) {
-  if ( err ) {
-    throw err;
-  }
+sailsgen(scope, function(err) {
+    if (err) {
+        throw err;
+    }
 
-  // It worked.
-  console.log( 'Done.' );
-} );
+    // It worked.
+    console.log('Done.');
+});

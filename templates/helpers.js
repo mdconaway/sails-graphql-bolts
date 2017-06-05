@@ -1,45 +1,45 @@
-var pluralize = require('pluralize');
-var graphql = require('graphql');
-var GraphQLJSON = require('graphql-type-json');
+const pluralize = require('pluralize');
+const graphql = require('graphql');
+const GraphQLJSON = require('graphql-type-json');
 
 // Sails to GraphQL types conversion
-var dataTypes = {
-	json: GraphQLJSON,
-	array: new graphql.GraphQLList(graphql.GraphQLString),
-	string: graphql.GraphQLString,
+const dataTypes = {
+    json: GraphQLJSON,
+    array: new graphql.GraphQLList(graphql.GraphQLString),
+    string: graphql.GraphQLString,
     email: graphql.GraphQLString,
-	text: graphql.GraphQLString,
-	integer: graphql.GraphQLInt,
-	float: graphql.GraphQLFloat,
-	date: graphql.GraphQLString,
-	datetime: graphql.GraphQLString,
-	boolean: graphql.GraphQLBoolean,
-	objectid: graphql.GraphQLID
+    text: graphql.GraphQLString,
+    integer: graphql.GraphQLInt,
+    float: graphql.GraphQLFloat,
+    date: graphql.GraphQLString,
+    datetime: graphql.GraphQLString,
+    boolean: graphql.GraphQLBoolean,
+    objectid: graphql.GraphQLID
 };
 
-var supportedTypes = Object.keys(dataTypes);
+const supportedTypes = Object.keys(dataTypes);
 
-var singleResolverArgs = {
+const singleResolverArgs = {
     id: { type: graphql.GraphQLID }
 };
 // Defining query args
 // Disabling max-len rule due to long docs link
 /* eslint-disable max-len */
-var connectionArgs = {
-	// `where` is JSON-like string
-	// used for filtering data
-	// where: "{
-	//   \"someProp\": \"someValue\",
-	//   \"otherProp\": {
-	//     \"contains\": \"a\"
-	//   }
-	// }"
-	// For full reference see
-	// https://github.com/balderdashy/waterline-docs/blob/master/queries/query-language.md
-	where: { type: graphql.GraphQLString },
-	limit: { type: graphql.GraphQLInt },
-	skip: { type: graphql.GraphQLInt },
-	sort: { type: graphql.GraphQLString }
+const connectionArgs = {
+    // `where` is JSON-like string
+    // used for filtering data
+    // where: "{
+    //   \"someProp\": \"someValue\",
+    //   \"otherProp\": {
+    //     \"contains\": \"a\"
+    //   }
+    // }"
+    // For full reference see
+    // https://github.com/balderdashy/waterline-docs/blob/master/queries/query-language.md
+    where: { type: graphql.GraphQLString },
+    limit: { type: graphql.GraphQLInt },
+    skip: { type: graphql.GraphQLInt },
+    sort: { type: graphql.GraphQLString }
 };
 
 /**
@@ -48,7 +48,7 @@ var connectionArgs = {
  * @returns {string}
  */
 function firstLetterToUpperCase(string) {
-	return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 /**
@@ -57,7 +57,7 @@ function firstLetterToUpperCase(string) {
  * @returns {string}
  */
 function firstLetterToLowerCase(string) {
-	return string.charAt(0).toLowerCase() + string.slice(1);
+    return string.charAt(0).toLowerCase() + string.slice(1);
 }
 
 /**
@@ -67,35 +67,35 @@ function firstLetterToLowerCase(string) {
  * @returns {object}
  */
 function getName(model) {
-	var fieldKey = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-	// Get model globalId to have original modal name (with correct case)
-	// Basically it should start with upper cased letter
-	var modelTypeName = model.globalId;
-	// Make sure the first letter of field name is upper cased
-	var fieldName = firstLetterToUpperCase(fieldKey);
-	// Will be used as GraphQL query field identifier
-	// Basically it should start with lower cased letter
-	var modelName = firstLetterToLowerCase(modelTypeName);
+    let fieldKey = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+    // Get model globalId to have original modal name (with correct case)
+    // Basically it should start with upper cased letter
+    let modelTypeName = model.globalId;
+    // Make sure the first letter of field name is upper cased
+    let fieldName = firstLetterToUpperCase(fieldKey);
+    // Will be used as GraphQL query field identifier
+    // Basically it should start with lower cased letter
+    let modelName = firstLetterToLowerCase(modelTypeName);
 
-	// TODO make an ability to customize this names
-	// (for example from model definition file)
-	return {
-		typeName: modelTypeName + 'Type',
-		inputTypeName: modelTypeName + 'InputType',
-		connectionTypeName: modelTypeName + 'ConnectionType',
-		fieldConnectionTypeName: '' + modelTypeName + fieldName + 'ConnectionType',
-		fieldUnionTypeName: '' + modelTypeName + fieldName + 'UnionType',
-		queryName: '' + modelName,
-		queryPluralName: '' + pluralize(modelName),
-		queryTypeName: modelTypeName + 'Query',
-		queryPluralTypeName: modelTypeName + 'RangeQuery',
-		mutationCreateName: 'create' + modelTypeName,
-		mutationCreateTypeName: 'Create' + modelTypeName + 'Mutation',
-		mutationDeleteName: 'delete' + modelTypeName,
-		mutationDeleteTypeName: 'Delete' + modelTypeName + 'Mutation',
-		mutationUpdateName: 'update' + modelTypeName,
-		mutationUpdateTypeName: 'Update' + modelTypeName + 'Mutation'
-	};
+    // TODO make an ability to customize this names
+    // (for example from model definition file)
+    return {
+        typeName: modelTypeName + 'Type',
+        inputTypeName: modelTypeName + 'InputType',
+        connectionTypeName: modelTypeName + 'ConnectionType',
+        fieldConnectionTypeName: '' + modelTypeName + fieldName + 'ConnectionType',
+        fieldUnionTypeName: '' + modelTypeName + fieldName + 'UnionType',
+        queryName: '' + modelName,
+        queryPluralName: '' + pluralize(modelName),
+        queryTypeName: modelTypeName + 'Query',
+        queryPluralTypeName: modelTypeName + 'RangeQuery',
+        mutationCreateName: 'create' + modelTypeName,
+        mutationCreateTypeName: 'Create' + modelTypeName + 'Mutation',
+        mutationDeleteName: 'delete' + modelTypeName,
+        mutationDeleteTypeName: 'Delete' + modelTypeName + 'Mutation',
+        mutationUpdateName: 'update' + modelTypeName,
+        mutationUpdateTypeName: 'Update' + modelTypeName + 'Mutation'
+    };
 }
 
 /**
@@ -104,18 +104,16 @@ function getName(model) {
  * @param {GraphQLObjectType} edgesType
  */
 function getConnectionType(name, edgesType) {
-	return new graphql.GraphQLObjectType({
-		name: name,
-		fields: function fields() {
-			return {
-				page: { type: graphql.GraphQLInt },
-				pages: { type: graphql.GraphQLInt },
-				perPage: { type: graphql.GraphQLInt },
-				total: { type: graphql.GraphQLInt },
-				edges: { type: new graphql.GraphQLList(edgesType) }
-			};
-		}
-	});
+    return new graphql.GraphQLObjectType({
+        name: name,
+        fields: () => ({
+            page: { type: graphql.GraphQLInt },
+            pages: { type: graphql.GraphQLInt },
+            perPage: { type: graphql.GraphQLInt },
+            total: { type: graphql.GraphQLInt },
+            edges: { type: new graphql.GraphQLList(edgesType) }
+        })
+    });
 }
 
 /**
@@ -124,9 +122,7 @@ function getConnectionType(name, edgesType) {
  * @returns {Array.<T>}
  */
 function getUniqueFields(attributes) {
-	return Object.keys(attributes).filter(function (fieldName) {
-		return attributes[fieldName].unique === true;
-	});
+    return Object.keys(attributes).filter(fieldName => attributes[fieldName].unique === true);
 }
 
 /**
@@ -134,24 +130,24 @@ function getUniqueFields(attributes) {
  * @param attributes
  */
 function getSingleQueryArgs(attributes) {
-	var uniqueFields = getUniqueFields(attributes);
-	return uniqueFields.reduce(function (args, fieldName) {
-		args[fieldName] = {
-			type: dataTypes[attributes[fieldName].type]
-		};
-		return args;
-	}, {});
+    let uniqueFields = getUniqueFields(attributes);
+    return uniqueFields.reduce(function(args, fieldName) {
+        args[fieldName] = {
+            type: dataTypes[attributes[fieldName].type]
+        };
+        return args;
+    }, {});
 }
 
 module.exports = {
-	firstLetterToUpperCase: firstLetterToUpperCase,
-	firstLetterToLowerCase: firstLetterToLowerCase,
-	getName: getName,
-	getConnectionType: getConnectionType,
-	getUniqueFields: getUniqueFields,
-	getSingleQueryArgs: getSingleQueryArgs,
-	dataTypes: dataTypes,
-	supportedTypes: supportedTypes,
-	connectionArgs: connectionArgs,
+    firstLetterToUpperCase: firstLetterToUpperCase,
+    firstLetterToLowerCase: firstLetterToLowerCase,
+    getName: getName,
+    getConnectionType: getConnectionType,
+    getUniqueFields: getUniqueFields,
+    getSingleQueryArgs: getSingleQueryArgs,
+    dataTypes: dataTypes,
+    supportedTypes: supportedTypes,
+    connectionArgs: connectionArgs,
     singleResolverArgs: singleResolverArgs
 };

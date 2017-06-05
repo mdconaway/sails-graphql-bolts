@@ -1,2 +1,4 @@
-exports.generateSchema = require('./generateSchema');
-exports.formatErrors = require('./formatErrors');
+module.exports = {
+    generateSchema: require('./generateSchema'),
+    formatErrors: require('./formatErrors')
+};

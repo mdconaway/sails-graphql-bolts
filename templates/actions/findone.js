@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-var actionUtil = require('./actionUtil');
+const actionUtil = require('./actionUtil');
 
 /**
  * Find One Record
@@ -17,22 +17,30 @@ var actionUtil = require('./actionUtil');
  * Optional:
  * @param {String} callback - default jsonp callback param (i.e. the name of the js function returned)
  */
+module.exports = function(interrupts) {
+    return function(req, res) {
+        let Model = actionUtil.parseModel(req);
+        let pk = actionUtil.requirePk(req);
+        let query = Model.findOne(pk);
 
-module.exports = function(req, res) {
-  var Model = actionUtil.parseModel(req);
-  var pk = actionUtil.requirePk(req);
-  var query = Model.findOne(pk);
-
-  query = actionUtil.populateRequest(query, req);
-  query.exec(function (err, matchingRecord){
-    if (err) return res.serverError(err);
-    if(!matchingRecord) return res.notFound('No record found with the specified `id`.');
-    this.interrupts.findone.call(this, req, res, function(){
-      if (req._sails.hooks.pubsub && req.isSocket) {
-        Model.subscribe(req, matchingRecord);
-        actionUtil.subscribeDeep(req, matchingRecord);
-      }
-      res.ok(matchingRecord);
-    }.bind(this), Model, matchingRecord);
-  }.bind(this));
+        query = actionUtil.populateRequest(query, req);
+        query.exec((err, matchingRecord) => {
+            if (err) return res.serverError(err);
+            if (!matchingRecord) return res.notFound('No record found with the specified `id`.');
+            interrupts.findone.call(
+                this,
+                req,
+                res,
+                () => {
+                    if (req._sails.hooks.pubsub && req.isSocket) {
+                        Model.subscribe(req, matchingRecord);
+                        actionUtil.subscribeDeep(req, matchingRecord);
+                    }
+                    res.ok(matchingRecord);
+                },
+                Model,
+                matchingRecord
+            );
+        });
+    };
 };

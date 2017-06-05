@@ -2,12 +2,11 @@
  * Module dependencies
  */
 
-var fs = require('fs');
-var util = require('util');
-var _ = require('lodash');
+const fs = require('fs');
+const util = require('util');
+const _ = require('lodash');
+const acceptedCommands = ['controller', 'resource', 'policies'];
 _.defaults = require('merge-defaults');
-var acceptedCommands = ['controller', 'resource', 'policies'];
-
 /**
  * INVALID_SCOPE_VARIABLE()
  *
@@ -22,17 +21,17 @@ var acceptedCommands = ['controller', 'resource', 'policies'];
  * @api private
  */
 
-function INVALID_SCOPE_VARIABLE (varname, details, message) {
-  var DEFAULT_MESSAGE =
-  'Issue encountered in generator "graphql-bolts":\n'+
-  'Missing required scope variable: `%s`"\n' +
-  'If you are the author of `sails-graphql-bolts`, please resolve this '+
-  'issue and publish a new patch release.';
+function INVALID_SCOPE_VARIABLE(varname, details, message) {
+    let DEFAULT_MESSAGE =
+        'Issue encountered in generator "graphql-bolts":\n' +
+        'Missing required scope variable: `%s`"\n' +
+        'If you are the author of `sails-graphql-bolts`, please resolve this ' +
+        'issue and publish a new patch release.';
 
-  message = (message || DEFAULT_MESSAGE) + (details ? '\n'+details : '');
-  message = util.inspect(message, varname);
+    message = (message || DEFAULT_MESSAGE) + (details ? '\n' + details : '');
+    message = util.inspect(message, varname);
 
-  return new Error(message);
+    return new Error(message);
 }
 /**
  * sails-graphql-bolts
@@ -56,41 +55,29 @@ module.exports = {
      * @param  {Function} cb    [callback]
      */
 
-    before: function (scope, cb) {
-        if (!scope.args[0]) 
-        {
+    before: function(scope, cb) {
+        if (!scope.args[0]) {
             return cb(new Error('Please provide a type for graphql-bolts to generate.'));
-        }
-        else if (acceptedCommands.indexOf(scope.args[0]) === -1)
-        {
-            return cb(new Error('Please enter a valid command. Supported commands: ' + acceptedCommands.join()))
+        } else if (acceptedCommands.indexOf(scope.args[0]) === -1) {
+            return cb(new Error('Please enter a valid command. Supported commands: ' + acceptedCommands.join()));
         }
         scope.generatorName = scope.args[0];
-        
-        if (!scope.rootPath) 
-        {
-            return cb(INVALID_SCOPE_VARIABLE('rootPath') );
+
+        if (!scope.rootPath) {
+            return cb(INVALID_SCOPE_VARIABLE('rootPath'));
         }
 
         _.defaults(scope, {
             createdAt: new Date()
         });
 
-        if(scope.args[0] === 'controller' || scope.args[0] === 'resource')
-        {
-            if(typeof scope.args[1] === 'string' && scope.args[1].trim().length > 0)
-            {
-                scope.filename = scope.args[1].trim().replace(/(^| )(\w)/g, function(x) {
-                    return x.toUpperCase();
-                }) + 'Controller';
-            }
-            else
-            {
+        if (scope.args[0] === 'controller' || scope.args[0] === 'resource') {
+            if (typeof scope.args[1] === 'string' && scope.args[1].trim().length > 0) {
+                scope.filename = scope.args[1].trim().replace(/(^| )(\w)/g, x => x.toUpperCase()) + 'Controller';
+            } else {
                 return cb(new Error('Please enter a valid name for your new ' + scope.args[0]));
             }
-        }
-        else
-        {
+        } else {
             scope.filename = scope.args[0];
         }
 
@@ -103,58 +90,65 @@ module.exports = {
      */
     targets: {
         './': {
-            exec: function ( scope, cb ) {
-                if(!fs.existsSync(scope.rootPath + '/api')) 
-                {
+            exec: function(scope, cb) {
+                if (!fs.existsSync(scope.rootPath + '/api')) {
                     fs.mkdirSync(scope.rootPath + '/api');
                 }
-                if(scope.generatorName === 'controller')
-                {
-                    if(!scope.force && fs.existsSync( scope.rootPath + '/api/controllers/' + scope.filename + '.js' )) 
-                    {
-                        return cb( new Error( 'Graph controller detected at specified path, not overwriting. To overwrite use --force.' ) );
-                    }
-                    else
-                    {
-                        if(!fs.existsSync(scope.rootPath + '/api/controllers')) 
-                        {
+                if (scope.generatorName === 'controller') {
+                    if (!scope.force && fs.existsSync(scope.rootPath + '/api/controllers/' + scope.filename + '.js')) {
+                        return cb(
+                            new Error(
+                                'Graph controller detected at specified path, not overwriting. To overwrite use --force.'
+                            )
+                        );
+                    } else {
+                        if (!fs.existsSync(scope.rootPath + '/api/controllers')) {
                             fs.mkdirSync(scope.rootPath + '/api/controllers');
                         }
-                        fs.writeFileSync(scope.rootPath + '/api/controllers/' + scope.filename + '.js', 'module.exports = require(\'sails-graphql-bolts\').controller;\n');
-                        console.info('Created controller: ' + scope.rootPath + '/api/controllers/' + scope.filename + '.js');
+                        fs.writeFileSync(
+                            scope.rootPath + '/api/controllers/' + scope.filename + '.js',
+                            "module.exports = require('sails-graphql-bolts').controller;\n"
+                        );
+                        console.info(
+                            'Created controller: ' + scope.rootPath + '/api/controllers/' + scope.filename + '.js'
+                        );
                     }
-                }
-                else if(scope.generatorName === 'resource')
-                {
-                    if(!scope.force && fs.existsSync( scope.rootPath + '/api/controllers/' + scope.filename + '.js' )) 
-                    {
-                        return cb( new Error( 'Graph resource detected at specified path, not overwriting. To overwrite use --force.' ) );
-                    }
-                    else
-                    {
-                        if(!fs.existsSync(scope.rootPath + '/api/controllers')) 
-                        {
+                } else if (scope.generatorName === 'resource') {
+                    if (!scope.force && fs.existsSync(scope.rootPath + '/api/controllers/' + scope.filename + '.js')) {
+                        return cb(
+                            new Error(
+                                'Graph resource detected at specified path, not overwriting. To overwrite use --force.'
+                            )
+                        );
+                    } else {
+                        if (!fs.existsSync(scope.rootPath + '/api/controllers')) {
                             fs.mkdirSync(scope.rootPath + '/api/controllers');
                         }
-                        fs.writeFileSync(scope.rootPath + '/api/controllers/' + scope.filename + '.js', 'var GraphQLBolts = require(\'sails-graphql-bolts\');\nmodule.exports = new GraphQLBolts.resource();\n');
-                        console.info('Created controller: ' + scope.rootPath + '/api/controllers/' + scope.filename + '.js');
+                        fs.writeFileSync(
+                            scope.rootPath + '/api/controllers/' + scope.filename + '.js',
+                            "var GraphQLBolts = require('sails-graphql-bolts');\nmodule.exports = new GraphQLBolts.resource();\n"
+                        );
+                        console.info(
+                            'Created controller: ' + scope.rootPath + '/api/controllers/' + scope.filename + '.js'
+                        );
                     }
-                }
-                else
-                {
-                    if(!fs.existsSync(scope.rootPath + '/api/policies')) 
-                    {
+                } else {
+                    if (!fs.existsSync(scope.rootPath + '/api/policies')) {
                         fs.mkdirSync(scope.rootPath + '/api/policies');
                     }
-                    ['Create', 'Destroy', 'Find', 'FindOne', 'Populate', 'Update'].forEach(function(file){
-                        if(!scope.force && fs.existsSync(scope.rootPath + '/api/policies/graph' + file + '.js'))
-                        {
+                    ['Create', 'Destroy', 'Find', 'FindOne', 'Populate', 'Update'].forEach(function(file) {
+                        if (!scope.force && fs.existsSync(scope.rootPath + '/api/policies/graph' + file + '.js')) {
                             console.info('Policy graph' + file + ' detected, skipping. To overwrite use --force.');
-                        }
-                        else
-                        {
-                            fs.writeFileSync(scope.rootPath + '/api/policies/graph' + file + '.js', 'var GraphQLBolts = require(\'sails-graphql-bolts\');\nmodule.exports = new GraphQLBolts.policies.graph' + file + '();\n');
-                            console.info('Created policy: ' + scope.rootPath + '/api/controllers/policies/graph' + file + '.js');
+                        } else {
+                            fs.writeFileSync(
+                                scope.rootPath + '/api/policies/graph' + file + '.js',
+                                "var GraphQLBolts = require('sails-graphql-bolts');\nmodule.exports = new GraphQLBolts.policies.graph" +
+                                    file +
+                                    '();\n'
+                            );
+                            console.info(
+                                'Created policy: ' + scope.rootPath + '/api/controllers/policies/graph' + file + '.js'
+                            );
                         }
                     });
                 }
@@ -162,7 +156,6 @@ module.exports = {
             }
         }
     },
-
 
     /**
      * The absolute path to the `templates` for this generator

@@ -1,10 +1,11 @@
 {
   "name": "sails-graphql-bolts",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "sails generate graphql-bolts",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "format": "prettier --single-quote --tab-width 4 --print-width 120 --trailing-comma none --write \"{templates/**/*.js,bin/*.js,index.js}\""
   },
   "keywords": [
     "graphql",
@@ -21,6 +22,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mdconaway/sails-graphql-bolts.git"
+  },
+  "engines" : { 
+    "node" : ">=6.0.0" 
   },
   "bugs": {
     "url": "https://github.com/mdconaway/sails-graphql-bolts/issues"
@@ -41,9 +45,10 @@
     "pluralize": "^1.1.0"
   },
   "devDependencies": {
-    "sails-generate": "*",
+    "fs-extra": "*",
+    "prettier": "^1.4.2",
     "reportback": "*",
-    "fs-extra": "*"
+    "sails-generate": "*"
   },
   "sailsGenerator": {
     "type": "graphql-bolts",

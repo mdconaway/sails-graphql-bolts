@@ -1,25 +1,25 @@
-var helpers = require('./helpers');
-var resolvers = require('./resolvers');
-var queries = {};
-var objectTypes = void 0;
+const helpers = require('./helpers');
+const resolvers = require('./resolvers');
+const queries = {};
+let objectTypes = void 0;
 
 /**
  * Create a query object type
  * @param model
  */
 function createSingleQuery(model) {
-	var temp = helpers.getName(model);
-	var queryName = temp.queryName;
-	var queryTypeName = temp.queryTypeName;
-	var typeName = temp.typeName;
-	var args = helpers.getSingleQueryArgs(model._attributes);
+    let temp = helpers.getName(model);
+    let queryName = temp.queryName;
+    let queryTypeName = temp.queryTypeName;
+    let typeName = temp.typeName;
+    let args = helpers.getSingleQueryArgs(model._attributes);
 
-	queries[queryName] = {
-		name: queryTypeName,
-		args: args,
-		type: objectTypes[typeName],
-		resolve: resolvers.resolveGetSingle(model)
-	};
+    queries[queryName] = {
+        name: queryTypeName,
+        args: args,
+        type: objectTypes[typeName],
+        resolve: resolvers.resolveGetSingle(model)
+    };
 }
 
 /**
@@ -27,18 +27,18 @@ function createSingleQuery(model) {
  * @param model
  */
 function createRangeQuery(model) {
-	var temp = helpers.getName(model);
-	var queryPluralName = temp.queryPluralName;
-	var queryPluralTypeName = temp.queryPluralTypeName;
-	var typeName = temp.typeName;
-	var connectionTypeName = temp.connectionTypeName;
+    let temp = helpers.getName(model);
+    let queryPluralName = temp.queryPluralName;
+    let queryPluralTypeName = temp.queryPluralTypeName;
+    let typeName = temp.typeName;
+    let connectionTypeName = temp.connectionTypeName;
 
-	queries[queryPluralName] = {
-		name: queryPluralTypeName,
-		type: helpers.getConnectionType(connectionTypeName, objectTypes[typeName]),
-		args: helpers.connectionArgs,
-		resolve: resolvers.resolveGetRange(model)
-	};
+    queries[queryPluralName] = {
+        name: queryPluralTypeName,
+        type: helpers.getConnectionType(connectionTypeName, objectTypes[typeName]),
+        args: helpers.connectionArgs,
+        resolve: resolvers.resolveGetRange(model)
+    };
 }
 
 /**
@@ -48,14 +48,14 @@ function createRangeQuery(model) {
  * @returns {object}
  */
 function createQueries(models, types) {
-	queries = {};
-	objectTypes = types;
-	Object.keys(models).forEach(function (modelName) {
-		createSingleQuery(models[modelName]);
-		createRangeQuery(models[modelName]);
-	});
+    queries = {};
+    objectTypes = types;
+    Object.keys(models).forEach(function(modelName) {
+        createSingleQuery(models[modelName]);
+        createRangeQuery(models[modelName]);
+    });
 
-	return queries;
+    return queries;
 }
 
 module.exports = createQueries;
