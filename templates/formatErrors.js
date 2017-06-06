@@ -2,7 +2,7 @@ function formatError(defaultErrors) {
     return defaultErrors.reduce((formattedErrors, ref) => {
         const originalError = ref.originalError;
         if (originalError) {
-            const body = originalError.body;
+            const body = originalError.body ? originalError.body : originalError;
             const code = body.code;
             const status = code === 'E_VALIDATION' ? 422 : body.status;
             const message = [body.reason];
