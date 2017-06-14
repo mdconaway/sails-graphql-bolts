@@ -1,13 +1,11 @@
 const helpers = require('./helpers');
 const resolvers = require('./resolvers');
-const queries = {};
-let objectTypes = void 0;
 
 /**
  * Create a query object type
  * @param model
  */
-function createSingleQuery(model) {
+function createSingleQuery(model, queries, objectTypes) {
     let temp = helpers.getName(model);
     let queryName = temp.queryName;
     let queryTypeName = temp.queryTypeName;
@@ -26,7 +24,7 @@ function createSingleQuery(model) {
  * Create a query object type for multiple instances
  * @param model
  */
-function createRangeQuery(model) {
+function createRangeQuery(model, queries, objectTypes) {
     let temp = helpers.getName(model);
     let queryPluralName = temp.queryPluralName;
     let queryPluralTypeName = temp.queryPluralTypeName;
@@ -48,11 +46,10 @@ function createRangeQuery(model) {
  * @returns {object}
  */
 function createQueries(models, types) {
-    queries = {};
-    objectTypes = types;
-    Object.keys(models).forEach(function(modelName) {
-        createSingleQuery(models[modelName]);
-        createRangeQuery(models[modelName]);
+    const queries = {};
+    Object.keys(models).forEach((modelName) => {
+        createSingleQuery(models[modelName], queries, types);
+        createRangeQuery(models[modelName], queries, types);
     });
 
     return queries;
