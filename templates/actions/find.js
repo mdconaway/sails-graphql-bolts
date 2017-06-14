@@ -4,7 +4,7 @@
 const actionUtil = require('./actionUtil');
 const _ = require('lodash');
 const findOne = require('./findone');
-const hasManyMap = void 0;
+let hasManyMap = void 0;
 /**
  * Find Records
  *
